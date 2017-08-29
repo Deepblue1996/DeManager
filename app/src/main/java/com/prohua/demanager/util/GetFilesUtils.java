@@ -239,8 +239,8 @@ public class GetFilesUtils {
         File path=new File(fpath);
         if(path.exists()){
             DecimalFormat df = new DecimalFormat("#.00");
-            String sizeStr="";
-            long size=0;
+            String sizeStr;
+            long size;
             try {
                 FileInputStream fis = new FileInputStream(path);
                 size=fis.available();
@@ -291,26 +291,22 @@ public class GetFilesUtils {
         final String orderBy1=FILE_INFO_TYPE;
         final String orderBy2=FILE_INFO_NAME;
 
-        Comparator<Map<String, Object>> order=new Comparator<Map<String,Object>>() {
-
-            @Override
-            public int compare(Map<String, Object> lhs, Map<String, Object> rhs) {
-                // TODO Auto-generated method stub
-                int left0=lhs.get(orderBy0).equals(true)?0:1;
-                int right0=rhs.get(orderBy0).equals(true)?0:1;
-                if(left0==right0){
-                    String left1=lhs.get(orderBy1).toString();
-                    String right1=rhs.get(orderBy1).toString();
-                    if(left1.compareTo(right1)==0){
-                        String left2=lhs.get(orderBy2).toString();
-                        String right2=rhs.get(orderBy2).toString();
-                        return left2.compareTo(right2);
-                    }else{
-                        return left1.compareTo(right1);
-                    }
+        Comparator<Map<String, Object>> order= (lhs, rhs) -> {
+            // TODO Auto-generated method stub
+            int left0=lhs.get(orderBy0).equals(true)?0:1;
+            int right0=rhs.get(orderBy0).equals(true)?0:1;
+            if(left0==right0){
+                String left1=lhs.get(orderBy1).toString();
+                String right1=rhs.get(orderBy1).toString();
+                if(left1.compareTo(right1)==0){
+                    String left2=lhs.get(orderBy2).toString();
+                    String right2=rhs.get(orderBy2).toString();
+                    return left2.compareTo(right2);
                 }else{
-                    return left0-right0;
+                    return left1.compareTo(right1);
                 }
+            }else{
+                return left0-right0;
             }
         };
 

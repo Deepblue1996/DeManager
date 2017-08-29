@@ -106,6 +106,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
         });
         recyclerViewHeader.setAdapter(defaultAdapter2);
+        recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize()-1);
 
     }
 
@@ -124,9 +125,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             } else {
                 if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
                     // 杀死线程,完全退出
-                    android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
-                    System.exit(0);
-                    //_mActivity.finish();
+                    //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                    //System.exit(0);
+                    _mActivity.finish();
                 } else {
                     TOUCH_TIME = System.currentTimeMillis();
                     // TODO: UI提示
