@@ -43,7 +43,19 @@ public class MainFragmentPresenter {
      * 进入目录
      */
     public void innerName(int position) {
-        Log.i("path",addPathList(mainFragmentModel.getPathList().get(position)).toString());
+        String str = addPathList(getPositionName(position)).toString();
+        if(!str.equals("not dir")) {
+            // 开新线程加载列表
+            new Thread(() -> {
+                try {
+                    loadFolderList(str);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+        else
+            Log.i("path", "不存在");
     }
 
     /**
@@ -81,11 +93,11 @@ public class MainFragmentPresenter {
         if (!file.exists()) {
             pathList.remove(pathList.size()-1);
             stringBuffer = new StringBuffer();
-            for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
-                stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
-            }
+            stringBuffer.append("not dir");
+            return stringBuffer;
+        } else {
+            return stringBuffer;
         }
-        return stringBuffer;
     }
 
     /**
@@ -143,5 +155,33 @@ public class MainFragmentPresenter {
      */
     public String getPathPosition(int position) {
         return mainFragmentModel.getPathList().get(position);
+    }
+
+    /**
+     * 获取路径长度
+     */
+    public int getPathListSize() {
+        return mainFragmentModel.getPathList().size();
+    }
+
+    /**
+     * 返回上一级
+     */
+    public void beforePath() {
+        List<String> pathList = mainFragmentModel.getPathList();
+        pathList.remove(getPathListSize()-1);
+        mainFragmentModel.setPathList(pathList);
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
+            stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
+        }
+        // 开新线程加载列表
+        new Thread(() -> {
+            try {
+                loadFolderList(stringBuffer.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

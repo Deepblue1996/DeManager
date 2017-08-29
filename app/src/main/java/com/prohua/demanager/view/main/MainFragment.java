@@ -117,22 +117,25 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Override
     public boolean onBackPressedSupport() {
 
-        // LogoFragment
-        if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
-            pop();
-        } else {
-            if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
-                // 杀死线程,完全退出
-                android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
-                System.exit(0);
-                //_mActivity.finish();
+        if (mainFragmentPresenter.getPathListSize() == 1){
+            // LogoFragment
+            if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
+                pop();
             } else {
-                TOUCH_TIME = System.currentTimeMillis();
-                // TODO: UI提示
-                Toast.makeText(getContext(), "再按一次,确定退出", Toast.LENGTH_LONG).show();
+                if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
+                    // 杀死线程,完全退出
+                    android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                    System.exit(0);
+                    //_mActivity.finish();
+                } else {
+                    TOUCH_TIME = System.currentTimeMillis();
+                    // TODO: UI提示
+                    Toast.makeText(getContext(), "再按一次,确定退出", Toast.LENGTH_LONG).show();
+                }
             }
+        } else {
+            mainFragmentPresenter.beforePath();
         }
-
         return true;
     }
 }
