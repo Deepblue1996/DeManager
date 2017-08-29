@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.prohua.demanager.R;
+import com.prohua.demanager.view.main.MainFragment;
 
 import me.yokeyword.fragmentation.SupportFragment;
 
