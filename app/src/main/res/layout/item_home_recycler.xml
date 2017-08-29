@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
-    android:padding="10dp"
+    android:paddingStart="10dp"
+    android:paddingBottom="10dp"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="RtlSymmetry">
 
     <ImageView
         android:id="@+id/img"
@@ -12,7 +15,7 @@
         android:layout_height="30dp" />
     <TextView
         android:id="@+id/f_path"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

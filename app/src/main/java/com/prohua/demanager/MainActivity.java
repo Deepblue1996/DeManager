@@ -30,8 +30,8 @@ public class MainActivity extends SupportActivity {
 
         StatusBarUtil.darkMode(this);
         // 隐藏标题栏
-        if (getSupportActionBar() != null)
-            getSupportActionBar().hide();
+        //if (getSupportActionBar() != null)
+            //getSupportActionBar().hide();
 
         if (findFragment(LogoFragment.class) == null) {
             loadRootFragment(R.id.root_view, LogoFragment.newInstance());  // 加载根Fragment
