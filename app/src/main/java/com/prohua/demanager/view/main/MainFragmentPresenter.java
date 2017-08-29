@@ -1,9 +1,11 @@
 package com.prohua.demanager.view.main;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.prohua.demanager.R;
 import com.prohua.demanager.util.GetFilesUtils;
+import com.prohua.demanager.util.MimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -48,16 +50,24 @@ public class MainFragmentPresenter {
         if (!str.equals("not dir")) {
             Log.i("path", str);
             // 开新线程加载列表
+            String finalStr = str;
             new Thread(() -> {
                 try {
-                    loadFolderList(str);
+                    loadFolderList(finalStr);
                     EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), 1));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }).start();
-        } else
-            Log.i("path", "不存在");
+        } else {
+            // 打开文件
+            str = getFilePath(getPositionName(position)).toString();
+            if(!str.equals("not file")) {
+                mainFragmentInterface.openFiles(str);
+            } else {
+                Log.i("open file code","400");
+            }
+        }
     }
 
     /**
@@ -104,6 +114,25 @@ public class MainFragmentPresenter {
             pathList.remove(pathList.size() - 1);
             stringBuffer = new StringBuffer();
             stringBuffer.append("not dir");
+            return stringBuffer;
+        } else {
+            return stringBuffer;
+        }
+    }
+
+    public StringBuffer getFilePath(String path) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
+            stringBuffer.append(mainFragmentModel.getPathList().get(i).getPathName()).append("/");
+        }
+        stringBuffer.append(path);
+        Log.i("path - dir", stringBuffer.toString());
+        File file = new File(stringBuffer.toString());
+        //判断文件夹是否存在,如果不存在则不添加,回滚
+        if (!file.isFile()) {
+            stringBuffer = new StringBuffer();
+            stringBuffer.append("not file");
             return stringBuffer;
         } else {
             return stringBuffer;

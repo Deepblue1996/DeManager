@@ -1,12 +1,16 @@
 package com.prohua.demanager.view.main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.prohua.demanager.R;
@@ -16,9 +20,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.yokeyword.fragmentation.SupportFragment;
+
+import static com.prohua.demanager.util.MimeUtils.getMIMEType;
 
 /**
  * 主界面
@@ -31,6 +39,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     RecyclerView recyclerViewHeader;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.have_not_file)
+    LinearLayout haveNotFile;
 
     private MainFragmentPresenter mainFragmentPresenter;
     private DefaultAdapter headerAdapter;
@@ -102,6 +112,13 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         } else {
             itemAdapter.notifyDataSetChanged();
         }
+
+        if(mainFragmentEvent.getList().size() == 0) {
+            haveNotFile.setVisibility(View.VISIBLE);
+        } else {
+            haveNotFile.setVisibility(View.GONE);
+        }
+
         // 滚动到指定位置
         recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
 
@@ -171,5 +188,43 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         int itemHeight = firstVisibItem.getHeight();
         int firstItemBottom = layoutManager.getDecoratedBottom(firstVisibItem);
         return (firstItemPosition + 1) * itemHeight - firstItemBottom;
+    }
+
+    //打开文件时调用
+    public void openFiles(String filesPath) {
+        Uri uri = Uri.parse("file://" + filesPath);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+
+        String type = getMIMEType(filesPath);
+        intent.setDataAndType(uri, type);
+        if (!type.equals("*/*")) {
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                startActivity(showOpenTypeDialog(filesPath));
+            }
+        } else {
+            startActivity(showOpenTypeDialog(filesPath));
+        }
+    }
+
+    //显示打开方式
+    public void show(String filesPath){
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+        startActivity(showOpenTypeDialog(filesPath));
+    }
+
+    public static Intent showOpenTypeDialog(String param) {
+        Log.e("ViChildError", "showOpenTypeDialog");
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(new File(param));
+        intent.setDataAndType(uri, "*/*");
+        return intent;
     }
 }

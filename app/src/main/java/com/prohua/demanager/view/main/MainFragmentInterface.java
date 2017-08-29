@@ -8,5 +8,8 @@ package com.prohua.demanager.view.main;
 public interface MainFragmentInterface {
 
     void initData();
+
     int getRecyclerViewItemScroll();
+
+    void openFiles(String filesPath);
 }
