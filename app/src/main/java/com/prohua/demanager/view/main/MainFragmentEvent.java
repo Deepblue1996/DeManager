@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 中间事件
  * Created by Deep on 2017/8/29 0029.
  */
 

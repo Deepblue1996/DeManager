@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 import com.prohua.demanager.R;
 import com.prohua.demanager.adapter.DefaultAdapter;
 import com.prohua.demanager.adapter.DefaultViewHolder;
-import com.prohua.demanager.util.GetFilesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,32 +50,30 @@ public class MainFragment extends SupportFragment implements DefaultAdapter.OnBi
         // 绑定ButterKnife
         ButterKnife.bind(this, view);
 
+        // 初始化视图
         initView();
+        // 初始化数据
         initData();
 
         return view;
     }
 
+    /**
+     * 初始化视图
+     */
     private void initView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    /**
+     * 初始化P层
+     */
     public void initData() {
-
         mainFragmentPresenter = new MainFragmentPresenter(this);
-
-        new Thread(() -> {
-            try {
-                mainFragmentPresenter.loadFolderList();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
     }
 
     /**
-     * 设置适配器
+     * 设置适配器, 必须UI线程,所以我使用了EventBus
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
@@ -85,6 +81,7 @@ public class MainFragment extends SupportFragment implements DefaultAdapter.OnBi
         defaultAdapter.setOnBindItemView(MainFragment.this);
         recyclerView.setAdapter(defaultAdapter);
     }
+
 
     @Override
     public void onBindItemViewHolder(DefaultViewHolder holder, int position) {

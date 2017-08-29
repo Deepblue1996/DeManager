@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Model层
  * Created by Deep on 2017/8/29 0029.
  */
 
 public class MainFragmentModel implements MainFragmentModelInterface {
+
     // 文件列表数据
     private List<Map<String, Object>> list = new ArrayList<>();
     // 路径
