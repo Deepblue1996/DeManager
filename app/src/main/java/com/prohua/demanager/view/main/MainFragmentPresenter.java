@@ -79,9 +79,7 @@ public class MainFragmentPresenter {
             mainFragmentModel.getList().clear();
         }
 
-        MainFragmentEvent event = new MainFragmentEvent();
-        event.setList(mainFragmentModel.getList());
-        EventBus.getDefault().post(event);
+        EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList()));
     }
 
     /**

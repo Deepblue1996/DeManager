@@ -11,6 +11,10 @@ import java.util.Map;
 public class MainFragmentEvent {
     private List<Map<String, Object>> list;
 
+    public MainFragmentEvent(List<Map<String, Object>> list) {
+        this.list = list;
+    }
+
     public List<Map<String, Object>> getList() {
         return list;
     }
