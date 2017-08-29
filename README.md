@@ -1,2 +1,2 @@
 # DeManager
-Android File Manager
+Mvp + fragmentation + EventBus + butterknife + hotfix
