@@ -1,6 +1,7 @@
 package com.prohua.demanager.adapter;
 
 import android.content.Context;
+import android.view.View;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class DefaultAdapter extends DefaultRVAdapter {
     @Override
     protected void onBindItemViewHolder(DefaultViewHolder holder, int position) {
         onBindItemView.onBindItemViewHolder(holder,position);
+        holder.itemView.setOnClickListener(view -> onBindItemClick.onBindItemClick(view, position));
     }
 
     private OnBindItemView onBindItemView;
@@ -29,4 +31,15 @@ public class DefaultAdapter extends DefaultRVAdapter {
     public interface OnBindItemView {
         void onBindItemViewHolder(DefaultViewHolder holder, int position);
     }
+
+    private OnBindItemClick onBindItemClick;
+
+    public void setOnBindItemClick(OnBindItemClick onBindItemClick) {
+        this.onBindItemClick = onBindItemClick;
+    }
+
+    public interface OnBindItemClick {
+        void onBindItemClick(View view, int position);
+    }
+
 }

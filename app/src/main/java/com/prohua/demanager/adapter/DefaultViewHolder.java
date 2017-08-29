@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 public class DefaultViewHolder extends RecyclerView.ViewHolder {
 
+
     public DefaultViewHolder(View view) {
         super(view);
     }
@@ -53,4 +54,5 @@ public class DefaultViewHolder extends RecyclerView.ViewHolder {
         }
         return this;
     }
+
 }

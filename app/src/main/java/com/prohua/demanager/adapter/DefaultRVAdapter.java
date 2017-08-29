@@ -3,6 +3,7 @@ package com.prohua.demanager.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public abstract class DefaultRVAdapter<T> extends RecyclerView.Adapter<DefaultVi
     private int layoutId;
     // 上下文
     private Context context;
+
 
     public DefaultRVAdapter(Context context, List<T> list, int layoutId) {
         this.list = list;

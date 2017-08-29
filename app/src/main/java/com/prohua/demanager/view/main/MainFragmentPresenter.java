@@ -1,10 +1,13 @@
 package com.prohua.demanager.view.main;
 
+import android.util.Log;
+
 import com.prohua.demanager.R;
 import com.prohua.demanager.util.GetFilesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,13 +40,52 @@ public class MainFragmentPresenter {
     }
 
     /**
+     * 进入目录
+     */
+    public void innerName(int position) {
+        Log.i("path",addPathList(mainFragmentModel.getPathList().get(position)).toString());
+    }
+
+    /**
      * 第一次初始化列表
      */
     public void loadFolderList() throws IOException {
         // 获取根目录绝对路径
         mainFragmentModel.setBaseFile(GetFilesUtils.getInstance().getBasePath());
         // 根据路径获取列表
-        loadFolderList(mainFragmentModel.getBaseFile());
+        try {
+            loadFolderList(addPathList("").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 路径
+     */
+    public StringBuffer addPathList(String path) {
+        List<String> pathList;
+        if (mainFragmentModel.getPathList().size() == 0) {
+            pathList = mainFragmentModel.getPathList();
+            pathList.add(mainFragmentModel.getBaseFile());
+        } else {
+            pathList = mainFragmentModel.getPathList();
+            pathList.add(path);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
+            stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
+        }
+        File file = new File(stringBuffer.toString());
+        //判断文件夹是否存在,如果不存在则不添加,回滚
+        if (!file.exists()) {
+            pathList.remove(pathList.size()-1);
+            stringBuffer = new StringBuffer();
+            for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
+                stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
+            }
+        }
+        return stringBuffer;
     }
 
     /**
@@ -79,7 +121,7 @@ public class MainFragmentPresenter {
             mainFragmentModel.getList().clear();
         }
 
-        EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList()));
+        EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList()));
     }
 
     /**
@@ -94,5 +136,12 @@ public class MainFragmentPresenter {
      */
     public String getPositionImg(int position) {
         return mainFragmentModel.getList().get(position).get("fImg").toString();
+    }
+
+    /**
+     * 获取名称
+     */
+    public String getPathPosition(int position) {
+        return mainFragmentModel.getPathList().get(position);
     }
 }

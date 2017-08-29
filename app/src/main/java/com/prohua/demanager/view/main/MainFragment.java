@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.prohua.demanager.R;
 import com.prohua.demanager.adapter.DefaultAdapter;
-import com.prohua.demanager.adapter.DefaultViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,14 +25,16 @@ import me.yokeyword.fragmentation.SupportFragment;
  * Created by Deep on 2017/8/28 0028.
  */
 
-public class MainFragment extends SupportFragment implements DefaultAdapter.OnBindItemView, MainFragmentInterface {
+public class MainFragment extends SupportFragment implements MainFragmentInterface {
 
+    @BindView(R.id.recycler_header_view)
+    RecyclerView recyclerViewHeader;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
     private MainFragmentPresenter mainFragmentPresenter;
 
-    // 再点一次退出程序时间设置
+    // 再点一次退出, 程序间隔时间设置
     private static final long WAIT_TIME = 2000L;
     private long TOUCH_TIME = 0;
 
@@ -60,14 +61,23 @@ public class MainFragment extends SupportFragment implements DefaultAdapter.OnBi
     }
 
     /**
-     * 初始化视图
+     * 初始化View控件
      */
     private void initView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //设置布局管理器
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        //设置布局管理器
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
+        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewHeader.setLayoutManager(linearLayoutManager2);
     }
 
     /**
-     * 初始化P层
+     * 初始化Presenter层
      */
     public void initData() {
         mainFragmentPresenter = new MainFragmentPresenter(this);
@@ -78,16 +88,25 @@ public class MainFragment extends SupportFragment implements DefaultAdapter.OnBi
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
+
         DefaultAdapter defaultAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
-        defaultAdapter.setOnBindItemView(MainFragment.this);
+        defaultAdapter.setOnBindItemView((holder, position) -> {
+            holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
+            holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
+
+        });
+        defaultAdapter.setOnBindItemClick((view, position) -> mainFragmentPresenter.innerName(position));
         recyclerView.setAdapter(defaultAdapter);
-    }
 
+        DefaultAdapter defaultAdapter2 = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
+        defaultAdapter2.setOnBindItemView((holder, position) ->
+            holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
+        );
+        defaultAdapter2.setOnBindItemClick((view, position) -> {
 
-    @Override
-    public void onBindItemViewHolder(DefaultViewHolder holder, int position) {
-        holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
-        holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
+        });
+        recyclerViewHeader.setAdapter(defaultAdapter2);
+
     }
 
     /**
