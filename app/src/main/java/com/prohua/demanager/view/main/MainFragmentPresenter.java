@@ -50,6 +50,7 @@ public class MainFragmentPresenter {
             new Thread(() -> {
                 try {
                     loadFolderList(str);
+                    EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(),1));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -67,6 +68,7 @@ public class MainFragmentPresenter {
         // 根据路径获取列表
         try {
             loadFolderList(addPathList("").toString());
+            EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), 0));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,8 +141,6 @@ public class MainFragmentPresenter {
         } else {
             mainFragmentModel.getList().clear();
         }
-
-        EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList()));
     }
 
     /**
@@ -194,6 +194,7 @@ public class MainFragmentPresenter {
         new Thread(() -> {
             try {
                 loadFolderList(stringBuffer.toString());
+                EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(),-1));
             } catch (IOException e) {
                 e.printStackTrace();
             }

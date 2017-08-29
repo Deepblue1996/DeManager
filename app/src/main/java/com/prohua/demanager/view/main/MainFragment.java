@@ -118,7 +118,13 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
             recyclerViewHeader.setAdapter(headerAdapter);
         } else {
-            headerAdapter.notifyDataSetChanged();
+            if(mainFragmentEvent.getPosition() == 0) {
+                headerAdapter.notifyDataSetChanged();
+            } else if(mainFragmentEvent.getPosition() == 1) {
+                headerAdapter.notifyItemInserted(mainFragmentPresenter.getPathListSize());
+            } else if(mainFragmentEvent.getPosition() == -1) {
+                headerAdapter.notifyItemRemoved(mainFragmentPresenter.getPathListSize());
+            }
         }
         recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize()-1);
 
