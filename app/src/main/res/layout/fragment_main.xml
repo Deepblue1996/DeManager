@@ -2,15 +2,19 @@
 <com.prohua.demanager.weight.TapHeight xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eee"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
+        android:background="#fff"
         android:id="@+id/recycler_header_view"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <android.support.v7.widget.RecyclerView
+        android:background="#fff"
         android:layout_marginTop="5dp"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

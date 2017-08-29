@@ -1,7 +1,6 @@
 package com.prohua.demanager.view.main;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -92,7 +91,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
 
-        if(itemAdapter == null) {
+        if (itemAdapter == null) {
             itemAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
             itemAdapter.setOnBindItemView((holder, position) -> {
                 holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
@@ -106,7 +105,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         // 滚动到指定位置
         recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
 
-        if(headerAdapter == null) {
+        if (headerAdapter == null) {
             headerAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
 
             headerAdapter.setOnBindItemView((holder, position) ->
@@ -118,15 +117,15 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
             recyclerViewHeader.setAdapter(headerAdapter);
         } else {
-            if(mainFragmentEvent.getPosition() == 0) {
+            if (mainFragmentEvent.getPosition() == 0) {
                 headerAdapter.notifyDataSetChanged();
-            } else if(mainFragmentEvent.getPosition() == 1) {
+            } else if (mainFragmentEvent.getPosition() == 1) {
                 headerAdapter.notifyItemInserted(mainFragmentPresenter.getPathListSize());
-            } else if(mainFragmentEvent.getPosition() == -1) {
+            } else if (mainFragmentEvent.getPosition() == -1) {
                 headerAdapter.notifyItemRemoved(mainFragmentPresenter.getPathListSize());
             }
         }
-        recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize()-1);
+        recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize() - 1);
 
     }
 
@@ -138,7 +137,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Override
     public boolean onBackPressedSupport() {
 
-        if (mainFragmentPresenter.getPathListSize() == 1){
+        if (mainFragmentPresenter.getPathListSize() == 1) {
             // LogoFragment
             if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
                 pop();
@@ -171,6 +170,6 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
         int itemHeight = firstVisibItem.getHeight();
         int firstItemBottom = layoutManager.getDecoratedBottom(firstVisibItem);
-        return (firstItemPosition + 1)*itemHeight - firstItemBottom;
+        return (firstItemPosition + 1) * itemHeight - firstItemBottom;
     }
 }

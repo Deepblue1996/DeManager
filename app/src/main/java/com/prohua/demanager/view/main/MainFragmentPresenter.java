@@ -21,8 +21,9 @@ import java.util.Map;
 
 public class MainFragmentPresenter {
 
+    // 数据
     private MainFragmentModel mainFragmentModel;
-
+    // 视图
     private MainFragmentInterface mainFragmentInterface;
 
     public MainFragmentPresenter(MainFragmentInterface view) {
@@ -44,13 +45,13 @@ public class MainFragmentPresenter {
      */
     public void innerName(int position) {
         String str = addPathList(getPositionName(position)).toString();
-        if(!str.equals("not dir")) {
+        if (!str.equals("not dir")) {
             Log.i("path", str);
             // 开新线程加载列表
             new Thread(() -> {
                 try {
                     loadFolderList(str);
-                    EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(),1));
+                    EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), 1));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -90,7 +91,7 @@ public class MainFragmentPresenter {
             pathBean.setPathName(path);
             pathBean.setItemHeight(0);
             pathList.add(pathBean);
-            pathList.get(getPathListSize()-2).setItemHeight(mainFragmentInterface.getRecyclerViewItemScroll());
+            pathList.get(getPathListSize() - 2).setItemHeight(mainFragmentInterface.getRecyclerViewItemScroll());
         }
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
@@ -100,7 +101,7 @@ public class MainFragmentPresenter {
         File file = new File(stringBuffer.toString());
         //判断文件夹是否存在,如果不存在则不添加,回滚
         if (!file.isDirectory()) {
-            pathList.remove(pathList.size()-1);
+            pathList.remove(pathList.size() - 1);
             stringBuffer = new StringBuffer();
             stringBuffer.append("not dir");
             return stringBuffer;
@@ -128,7 +129,27 @@ public class MainFragmentPresenter {
                 } else {
                     gMap.put("fIsDir", false);
                     if (fileType.equals("txt") || fileType.equals("text")) {
-                        gMap.put("fImg", R.mipmap.file);
+                        gMap.put("fImg", R.mipmap.type_txt);
+                    } else if (fileType.equals("mp4") || fileType.equals("3gp") || fileType.equals("avi")
+                            || fileType.equals("mkv") || fileType.equals("rmvb")) {
+                        gMap.put("fImg", R.mipmap.type_video);
+                    } else if (fileType.equals("pdf")) {
+                        gMap.put("fImg", R.mipmap.type_pdf);
+                    } else if (fileType.equals("cd") || fileType.equals("ogg") || fileType.equals("mp3")
+                            || fileType.equals("asf") || fileType.equals("wma") || fileType.equals("wav") || fileType.equals("mp3pro")
+                            || fileType.equals("rm") || fileType.equals("real") || fileType.equals("ape") || fileType.equals("module")
+                            || fileType.equals("midi") || fileType.equals("vgf")) {
+                        gMap.put("fImg", R.mipmap.type_music);
+                    } else if (fileType.equals("zip") || fileType.equals("rar") || fileType.equals("gz")) {
+                        gMap.put("fImg", R.mipmap.type_zip);
+                    } else if (fileType.equals("torrent")) {
+                        gMap.put("fImg", R.mipmap.type_bt);
+                    } else if (fileType.equals("bmp") || fileType.equals("pcx") || fileType.equals("tiff") || fileType.equals("jpg")
+                            || fileType.equals("gif") || fileType.equals("jpeg") || fileType.equals("tga") || fileType.equals("exif")
+                            || fileType.equals("fpx") || fileType.equals("svg") || fileType.equals("psd") || fileType.equals("cdr")
+                            || fileType.equals("pcd") || fileType.equals("dxf") || fileType.equals("ufo") || fileType.equals("eps")
+                            || fileType.equals("ai") || fileType.equals("png") || fileType.equals("hdri") || fileType.equals("raw")) {
+                        gMap.put("fImg", R.mipmap.type_img);
                     } else {
                         gMap.put("fImg", R.mipmap.file);
                     }
@@ -175,8 +196,8 @@ public class MainFragmentPresenter {
      * 获取记录的距离
      */
     public int getPathScroll() {
-        Log.i("path - this - height", mainFragmentModel.getPathList().get(getPathListSize()-1).getItemHeight()+"");
-        return mainFragmentModel.getPathList().get(getPathListSize()-1).getItemHeight();
+        Log.i("path - this - height", mainFragmentModel.getPathList().get(getPathListSize() - 1).getItemHeight() + "");
+        return mainFragmentModel.getPathList().get(getPathListSize() - 1).getItemHeight();
     }
 
     /**
@@ -184,7 +205,7 @@ public class MainFragmentPresenter {
      */
     public void beforePath() {
         List<PathBean> pathList = mainFragmentModel.getPathList();
-        pathList.remove(getPathListSize()-1);
+        pathList.remove(getPathListSize() - 1);
         mainFragmentModel.setPathList(pathList);
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
@@ -194,7 +215,7 @@ public class MainFragmentPresenter {
         new Thread(() -> {
             try {
                 loadFolderList(stringBuffer.toString());
-                EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(),-1));
+                EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), -1));
             } catch (IOException e) {
                 e.printStackTrace();
             }
