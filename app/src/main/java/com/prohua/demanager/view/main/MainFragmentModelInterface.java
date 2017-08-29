@@ -14,9 +14,9 @@ public interface MainFragmentModelInterface {
 
     void setList(List<Map<String, Object>> list);
 
-    List<String> getPathList();
+    List<PathBean> getPathList();
 
-    void setPathList(List<String> pathList);
+    void setPathList(List<PathBean> pathList);
 
     String getBaseFile();
 

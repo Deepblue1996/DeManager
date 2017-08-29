@@ -14,7 +14,7 @@ public class MainFragmentModel implements MainFragmentModelInterface {
     // 文件列表数据
     private List<Map<String, Object>> list = new ArrayList<>();
     // 路径
-    private List<String> pathList = new ArrayList<>();
+    private List<PathBean> pathList = new ArrayList<>();
     // 基础路径
     private String baseFile;
 
@@ -26,11 +26,11 @@ public class MainFragmentModel implements MainFragmentModelInterface {
         this.list = list;
     }
 
-    public List<String> getPathList() {
+    public List<PathBean> getPathList() {
         return pathList;
     }
 
-    public void setPathList(List<String> pathList) {
+    public void setPathList(List<PathBean> pathList) {
         this.pathList = pathList;
     }
 

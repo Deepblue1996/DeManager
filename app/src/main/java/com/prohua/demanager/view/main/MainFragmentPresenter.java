@@ -45,6 +45,7 @@ public class MainFragmentPresenter {
     public void innerName(int position) {
         String str = addPathList(getPositionName(position)).toString();
         if(!str.equals("not dir")) {
+            Log.i("path", str);
             // 开新线程加载列表
             new Thread(() -> {
                 try {
@@ -53,8 +54,7 @@ public class MainFragmentPresenter {
                     e.printStackTrace();
                 }
             }).start();
-        }
-        else
+        } else
             Log.i("path", "不存在");
     }
 
@@ -76,21 +76,28 @@ public class MainFragmentPresenter {
      * 路径
      */
     public StringBuffer addPathList(String path) {
-        List<String> pathList;
+        List<PathBean> pathList;
+        PathBean pathBean = new PathBean();
         if (mainFragmentModel.getPathList().size() == 0) {
             pathList = mainFragmentModel.getPathList();
-            pathList.add(mainFragmentModel.getBaseFile());
+            pathBean.setPathName(mainFragmentModel.getBaseFile());
+            pathBean.setItemHeight(0);
+            pathList.add(pathBean);
         } else {
             pathList = mainFragmentModel.getPathList();
-            pathList.add(path);
+            pathBean.setPathName(path);
+            pathBean.setItemHeight(0);
+            pathList.add(pathBean);
+            pathList.get(getPathListSize()-2).setItemHeight(mainFragmentInterface.getRecyclerViewItemScroll());
         }
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
-            stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
+            stringBuffer.append(mainFragmentModel.getPathList().get(i).getPathName()).append("/");
         }
+        Log.i("path - dir", stringBuffer.toString());
         File file = new File(stringBuffer.toString());
         //判断文件夹是否存在,如果不存在则不添加,回滚
-        if (!file.exists()) {
+        if (!file.isDirectory()) {
             pathList.remove(pathList.size()-1);
             stringBuffer = new StringBuffer();
             stringBuffer.append("not dir");
@@ -154,7 +161,7 @@ public class MainFragmentPresenter {
      * 获取名称
      */
     public String getPathPosition(int position) {
-        return mainFragmentModel.getPathList().get(position);
+        return mainFragmentModel.getPathList().get(position).getPathName();
     }
 
     /**
@@ -165,15 +172,23 @@ public class MainFragmentPresenter {
     }
 
     /**
+     * 获取记录的距离
+     */
+    public int getPathScroll() {
+        Log.i("path - this - height", mainFragmentModel.getPathList().get(getPathListSize()-1).getItemHeight()+"");
+        return mainFragmentModel.getPathList().get(getPathListSize()-1).getItemHeight();
+    }
+
+    /**
      * 返回上一级
      */
     public void beforePath() {
-        List<String> pathList = mainFragmentModel.getPathList();
+        List<PathBean> pathList = mainFragmentModel.getPathList();
         pathList.remove(getPathListSize()-1);
         mainFragmentModel.setPathList(pathList);
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
-            stringBuffer.append(mainFragmentModel.getPathList().get(i)).append("/");
+            stringBuffer.append(mainFragmentModel.getPathList().get(i).getPathName()).append("/");
         }
         // 开新线程加载列表
         new Thread(() -> {

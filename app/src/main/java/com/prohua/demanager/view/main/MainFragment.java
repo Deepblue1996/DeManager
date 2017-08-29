@@ -1,6 +1,7 @@
 package com.prohua.demanager.view.main;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     RecyclerView recyclerView;
 
     private MainFragmentPresenter mainFragmentPresenter;
+    private DefaultAdapter headerAdapter;
+    private DefaultAdapter itemAdapter;
 
     // 再点一次退出, 程序间隔时间设置
     private static final long WAIT_TIME = 2000L;
@@ -89,23 +92,34 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
 
-        DefaultAdapter defaultAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
-        defaultAdapter.setOnBindItemView((holder, position) -> {
-            holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
-            holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
+        if(itemAdapter == null) {
+            itemAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
+            itemAdapter.setOnBindItemView((holder, position) -> {
+                holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
+                holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
+            });
+            itemAdapter.setOnBindItemClick((view, position) -> mainFragmentPresenter.innerName(position));
+            recyclerView.setAdapter(itemAdapter);
+        } else {
+            itemAdapter.notifyDataSetChanged();
+        }
+        // 滚动到指定位置
+        recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
 
-        });
-        defaultAdapter.setOnBindItemClick((view, position) -> mainFragmentPresenter.innerName(position));
-        recyclerView.setAdapter(defaultAdapter);
+        if(headerAdapter == null) {
+            headerAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
 
-        DefaultAdapter defaultAdapter2 = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
-        defaultAdapter2.setOnBindItemView((holder, position) ->
-            holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
-        );
-        defaultAdapter2.setOnBindItemClick((view, position) -> {
+            headerAdapter.setOnBindItemView((holder, position) ->
+                    holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
+            );
+            headerAdapter.setOnBindItemClick((view, position) -> {
 
-        });
-        recyclerViewHeader.setAdapter(defaultAdapter2);
+            });
+
+            recyclerViewHeader.setAdapter(headerAdapter);
+        } else {
+            headerAdapter.notifyDataSetChanged();
+        }
         recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize()-1);
 
     }
@@ -138,5 +152,19 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             mainFragmentPresenter.beforePath();
         }
         return true;
+    }
+
+    /**
+     * 滑动的距离
+     *
+     * @return height
+     */
+    public int getRecyclerViewItemScroll() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        View firstVisibItem = recyclerView.getChildAt(0);
+        int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
+        int itemHeight = firstVisibItem.getHeight();
+        int firstItemBottom = layoutManager.getDecoratedBottom(firstVisibItem);
+        return (firstItemPosition + 1)*itemHeight - firstItemBottom;
     }
 }

@@ -10,18 +10,18 @@ import java.util.Map;
 
 public class MainFragmentEvent {
     private List<Map<String, Object>> list;
-    private List<String> plist;
+    private List<PathBean> plist;
 
-    public List<String> getPlist() {
+    public List<PathBean> getPlist() {
         return plist;
     }
 
-    public MainFragmentEvent(List<Map<String, Object>> list, List<String> plist) {
+    public MainFragmentEvent(List<Map<String, Object>> list, List<PathBean> plist) {
         this.list = list;
         this.plist = plist;
     }
 
-    public void setPlist(List<String> plist) {
+    public void setPlist(List<PathBean> plist) {
         this.plist = plist;
 
     }
