@@ -34,7 +34,7 @@ public class LogoFragment extends SupportFragment {
         new Handler().postDelayed(() -> {
             if (okStart)
                 start(MainFragment.newInstance());
-        }, 1000);
+        }, 500);
 
         return view;
     }

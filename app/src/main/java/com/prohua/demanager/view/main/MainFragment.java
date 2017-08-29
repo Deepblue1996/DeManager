@@ -35,6 +35,7 @@ import static com.prohua.demanager.util.MimeUtils.getMIMEType;
 
 public class MainFragment extends SupportFragment implements MainFragmentInterface {
 
+    // 布局控件
     @BindView(R.id.recycler_header_view)
     RecyclerView recyclerViewHeader;
     @BindView(R.id.recycler_view)
@@ -42,12 +43,16 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @BindView(R.id.have_not_file)
     LinearLayout haveNotFile;
 
+    // Presenter层
     private MainFragmentPresenter mainFragmentPresenter;
+    // 头部View
     private DefaultAdapter headerAdapter;
+    // 列表item
     private DefaultAdapter itemAdapter;
 
     // 再点一次退出, 程序间隔时间设置
     private static final long WAIT_TIME = 2000L;
+    // 第一次触摸的时间
     private long TOUCH_TIME = 0;
 
     public static MainFragment newInstance() {
@@ -101,6 +106,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
 
+        // 列表适配器
         if (itemAdapter == null) {
             itemAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
             itemAdapter.setOnBindItemView((holder, position) -> {
@@ -110,9 +116,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             itemAdapter.setOnBindItemClick((view, position) -> mainFragmentPresenter.innerName(position));
             recyclerView.setAdapter(itemAdapter);
         } else {
+            // 刷新列表
             itemAdapter.notifyDataSetChanged();
         }
 
+        // 判断是否是空列表
         if(mainFragmentEvent.getList().size() == 0) {
             haveNotFile.setVisibility(View.VISIBLE);
         } else {
@@ -122,26 +130,41 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         // 滚动到指定位置
         recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
 
+        // 路径适配器
         if (headerAdapter == null) {
             headerAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
 
             headerAdapter.setOnBindItemView((holder, position) ->
                     holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
             );
-            headerAdapter.setOnBindItemClick((view, position) -> {
-
-            });
+            headerAdapter.setOnBindItemClick((view, position) ->
+                    mainFragmentPresenter.selectPath(position)
+            );
 
             recyclerViewHeader.setAdapter(headerAdapter);
         } else {
-            if (mainFragmentEvent.getPosition() == 0) {
+            // 处理数据的变化
+            if (mainFragmentEvent.getPosition() == 0) { // 如果 0 则只刷新
                 headerAdapter.notifyDataSetChanged();
-            } else if (mainFragmentEvent.getPosition() == 1) {
+            } else if (mainFragmentEvent.getPosition() == 1) { // 如果 1 则增加
                 headerAdapter.notifyItemInserted(mainFragmentPresenter.getPathListSize());
-            } else if (mainFragmentEvent.getPosition() == -1) {
+            } else if (mainFragmentEvent.getPosition() == -1) { // 如果 -1 则减少
                 headerAdapter.notifyItemRemoved(mainFragmentPresenter.getPathListSize());
+            } else { // 其他就整个刷新, 不整个更换适配器出现数据不对齐, 干脆换个对象
+                headerAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getPlist(), R.layout.item_home_header_recycler);
+
+                headerAdapter.setOnBindItemView((holder, position) ->
+                        holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
+                );
+                headerAdapter.setOnBindItemClick((view, position) ->
+                        mainFragmentPresenter.selectPath(position)
+                );
+
+                recyclerViewHeader.setAdapter(headerAdapter);
             }
         }
+
+        // 滚动到最后
         recyclerViewHeader.scrollToPosition(mainFragmentPresenter.getPathListSize() - 1);
 
     }
@@ -190,7 +213,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         return (firstItemPosition + 1) * itemHeight - firstItemBottom;
     }
 
-    //打开文件时调用
+    /**
+     * 打开文件本地打开方式
+     */
     public void openFiles(String filesPath) {
         Uri uri = Uri.parse("file://" + filesPath);
         Intent intent = new Intent();
@@ -210,14 +235,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         }
     }
 
-    //显示打开方式
-    public void show(String filesPath){
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        startActivity(showOpenTypeDialog(filesPath));
-    }
-
+    /**
+     * 打开文件本地打开方式选择窗口
+     */
     public static Intent showOpenTypeDialog(String param) {
         Log.e("ViChildError", "showOpenTypeDialog");
         Intent intent = new Intent();

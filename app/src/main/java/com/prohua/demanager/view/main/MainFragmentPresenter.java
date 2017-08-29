@@ -1,16 +1,15 @@
 package com.prohua.demanager.view.main;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.prohua.demanager.R;
 import com.prohua.demanager.util.GetFilesUtils;
-import com.prohua.demanager.util.MimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +70,7 @@ public class MainFragmentPresenter {
     }
 
     /**
-     * 第一次初始化列表
+     * 初始化列表
      */
     public void loadFolderList() throws IOException {
         // 获取根目录绝对路径
@@ -86,7 +85,7 @@ public class MainFragmentPresenter {
     }
 
     /**
-     * 路径
+     * 打开目录的路径
      */
     public StringBuffer addPathList(String path) {
         List<PathBean> pathList;
@@ -120,6 +119,9 @@ public class MainFragmentPresenter {
         }
     }
 
+    /**
+     * 获取当前打开文件的路径
+     */
     public StringBuffer getFilePath(String path) {
 
         StringBuffer stringBuffer = new StringBuffer();
@@ -140,7 +142,7 @@ public class MainFragmentPresenter {
     }
 
     /**
-     * 加载列表
+     * 加载列表,相关信息
      */
     public void loadFolderList(String file) throws IOException {
         List<Map<String, Object>> list = GetFilesUtils.getInstance().getSonNode(file);
@@ -156,6 +158,7 @@ public class MainFragmentPresenter {
                     gMap.put("fInfo", map.get(GetFilesUtils.FILE_INFO_NUM_SONDIRS) + "个文件夹和" +
                             map.get(GetFilesUtils.FILE_INFO_NUM_SONFILES) + "个文件");
                 } else {
+                    // 添加信息
                     gMap.put("fIsDir", false);
                     if (fileType.equals("txt") || fileType.equals("text")) {
                         gMap.put("fImg", R.mipmap.type_txt);
@@ -245,6 +248,35 @@ public class MainFragmentPresenter {
             try {
                 loadFolderList(stringBuffer.toString());
                 EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), -1));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    /**
+     * 根据用户点击item,快速切换到指定路径
+     */
+    public void selectPath(int position) {
+        List<PathBean> fpathList = mainFragmentModel.getPathList();
+        List<PathBean> pathList = new ArrayList<>();
+        for (int i = 0; i < position + 1; i++) {
+            pathList.add(fpathList.get(i));
+        }
+        mainFragmentModel.setPathList(pathList);
+
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < mainFragmentModel.getPathList().size(); i++) {
+            stringBuffer.append(mainFragmentModel.getPathList().get(i).getPathName()).append("/");
+        }
+
+        Log.i("fpath", stringBuffer+"");
+
+        // 开新线程加载列表
+        new Thread(() -> {
+            try {
+                loadFolderList(stringBuffer.toString());
+                EventBus.getDefault().post(new MainFragmentEvent(mainFragmentModel.getList(), mainFragmentModel.getPathList(), 2));
             } catch (IOException e) {
                 e.printStackTrace();
             }
