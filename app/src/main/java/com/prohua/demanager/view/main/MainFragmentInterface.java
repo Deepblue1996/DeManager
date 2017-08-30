@@ -12,4 +12,8 @@ public interface MainFragmentInterface {
     int getRecyclerViewItemScroll();
 
     void openFiles(String filesPath);
+
+    void showRefreshAnimator();
+
+    void stopRefreshAnimator();
 }

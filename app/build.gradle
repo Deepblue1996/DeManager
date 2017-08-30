@@ -38,6 +38,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.github.florent37:viewanimator:1.0.5'
 }
 
 buildscript {

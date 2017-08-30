@@ -50,6 +50,7 @@ public class MainFragmentPresenter {
             Log.i("path", str);
             // 开新线程加载列表
             String finalStr = str;
+
             new Thread(() -> {
                 try {
                     loadFolderList(finalStr);
@@ -324,6 +325,21 @@ public class MainFragmentPresenter {
         } else {
             mainFragmentModel.getList().get(position).put("fSelect", 1);
         }
+    }
+
+    /**
+     *
+     */
+    public void setPathItemSelect(int hasScroll) {
+        mainFragmentModel.getPathList().get(getPathListSize()-1).setHasScroll(hasScroll);
+    }
+
+
+    /**
+     *
+     */
+    public int getPathItemSelect() {
+        return mainFragmentModel.getPathList().get(getPathListSize()-1).getHasScroll();
     }
 
     /**

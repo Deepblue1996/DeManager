@@ -1,8 +1,10 @@
 package com.prohua.demanager.view.main;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.github.florent37.viewanimator.ViewAnimator;
 import com.prohua.demanager.R;
 import com.prohua.demanager.adapter.DefaultAdapter;
 
@@ -21,6 +25,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.time.temporal.ValueRange;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +49,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     RecyclerView recyclerView;
     @BindView(R.id.have_not_file)
     LinearLayout haveNotFile;
+
+    @BindView(R.id.i_refresh)
+    ImageView i_refresh;
+
+    // 刷新动画
+    private ViewAnimator refreshValueAnimator;
 
     // Presenter层
     private MainFragmentPresenter mainFragmentPresenter;
@@ -106,6 +119,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setDefaultAdapter(MainFragmentEvent mainFragmentEvent) {
 
+        stopRefreshAnimator();
         // 列表适配器
         if (itemAdapter == null) {
 
@@ -136,6 +150,10 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             // 点击事件
             itemAdapter.setOnBindItemClick((view, position) -> {
                 if (!mainFragmentPresenter.getIsShowSelectList()) {
+
+                    showRefreshAnimator();
+
+                    mainFragmentPresenter.setPathItemSelect(0);
                     mainFragmentPresenter.innerName(position);
                 } else {
                     mainFragmentPresenter.setListItemSelect(position);
@@ -164,8 +182,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             haveNotFile.setVisibility(View.GONE);
         }
 
+        Log.i("ftp",mainFragmentPresenter.getPathItemSelect()+"");
         // 滚动到指定位置
-        recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
+        if(mainFragmentPresenter.getPathItemSelect() < 2) {
+            recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
+            mainFragmentPresenter.setPathItemSelect(mainFragmentPresenter.getPathItemSelect()+1);
+        }
 
         // 路径适配器
         if (headerAdapter == null) {
@@ -196,9 +218,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 headerAdapter.setOnBindItemView((holder, position) ->
                         holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
                 );
-                headerAdapter.setOnBindItemClick((view, position) ->
-                        mainFragmentPresenter.selectPath(position)
-                );
+                headerAdapter.setOnBindItemClick((view, position) -> {
+                    if (mainFragmentPresenter.getPathListSize()-1 == position) {
+                        mainFragmentPresenter.setPathItemSelect(2);
+                    }
+                    mainFragmentPresenter.selectPath(position);
+                });
                 headerAdapter.setOnBindItemLongClick((view, position) -> {
 
                 });
@@ -221,7 +246,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     public boolean onBackPressedSupport() {
 
         // 不是选择的状态
-        if(!mainFragmentPresenter.getIsShowSelectList()) {
+        if (!mainFragmentPresenter.getIsShowSelectList()) {
             if (mainFragmentPresenter.getPathListSize() == 1) {
                 // LogoFragment
                 if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
@@ -239,6 +264,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     }
                 }
             } else {
+                showRefreshAnimator();
                 mainFragmentPresenter.beforePath();
             }
         } else { // 取消选择
@@ -296,4 +322,39 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         intent.setDataAndType(uri, "*/*");
         return intent;
     }
+
+    /**
+     * 循环显示加载动画
+     */
+    public void showRefreshAnimator() {
+        i_refresh.setVisibility(View.VISIBLE);
+
+        ViewAnimator
+                .animate(recyclerViewHeader)
+                .translationX(0, 18)
+                .duration(200)
+                .start();
+
+        refreshValueAnimator = ViewAnimator
+                .animate(i_refresh)
+                .rotation(0, 360)
+                .duration(500)
+                .start();
+    }
+
+    /**
+     * 取消循环显示加载动画
+     */
+    public void stopRefreshAnimator() {
+        i_refresh.setVisibility(View.GONE);
+        if (refreshValueAnimator != null) {
+            refreshValueAnimator.cancel();
+            ViewAnimator
+                    .animate(recyclerViewHeader)
+                    .translationX(18, 0)
+                    .duration(200)
+                    .start();
+        }
+    }
+
 }

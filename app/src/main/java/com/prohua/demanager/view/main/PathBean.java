@@ -10,6 +10,16 @@ public class PathBean {
     private String pathName;
     // 用户滚到了距离记录
     private int itemHeight;
+    // 记录是否加载过
+    private int hasScroll = 0;
+
+    public int getHasScroll() {
+        return hasScroll;
+    }
+
+    public void setHasScroll(int hasScroll) {
+        this.hasScroll = hasScroll;
+    }
 
     public String getPathName() {
         return pathName;
