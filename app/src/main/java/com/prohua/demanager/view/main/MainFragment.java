@@ -1,10 +1,8 @@
 package com.prohua.demanager.view.main;
 
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +23,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.time.temporal.ValueRange;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -182,11 +177,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             haveNotFile.setVisibility(View.GONE);
         }
 
-        Log.i("ftp",mainFragmentPresenter.getPathItemSelect()+"");
+        Log.i("ftp", mainFragmentPresenter.getPathItemSelect() + "");
         // 滚动到指定位置
-        if(mainFragmentPresenter.getPathItemSelect() < 2) {
+        if (mainFragmentPresenter.getPathItemSelect() < 2) {
             recyclerView.scrollBy(0, mainFragmentPresenter.getPathScroll());
-            mainFragmentPresenter.setPathItemSelect(mainFragmentPresenter.getPathItemSelect()+1);
+            mainFragmentPresenter.setPathItemSelect(mainFragmentPresenter.getPathItemSelect() + 1);
         }
 
         // 路径适配器
@@ -219,7 +214,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                         holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
                 );
                 headerAdapter.setOnBindItemClick((view, position) -> {
-                    if (mainFragmentPresenter.getPathListSize()-1 == position) {
+                    if (mainFragmentPresenter.getPathListSize() - 1 == position) {
                         mainFragmentPresenter.setPathItemSelect(2);
                     }
                     mainFragmentPresenter.selectPath(position);
@@ -311,6 +306,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     }
 
     /**
+     * 未知类型目前按txt处理方式打开, 后面采用打开dialog让用户自己选择要打开的类型的方式
      * 打开文件本地打开方式选择窗口
      */
     public static Intent showOpenTypeDialog(String param) {
@@ -319,7 +315,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
         Uri uri = Uri.fromFile(new File(param));
-        intent.setDataAndType(uri, "*/*");
+        intent.setDataAndType(uri, "text/plain");
         return intent;
     }
 
