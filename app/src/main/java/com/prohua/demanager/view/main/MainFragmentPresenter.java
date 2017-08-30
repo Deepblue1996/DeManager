@@ -61,10 +61,10 @@ public class MainFragmentPresenter {
         } else {
             // 打开文件
             str = getFilePath(getPositionName(position)).toString();
-            if(!str.equals("not file")) {
+            if (!str.equals("not file")) {
                 mainFragmentInterface.openFiles(str);
             } else {
-                Log.i("open file code","400");
+                Log.i("open file code", "400");
             }
         }
     }
@@ -189,6 +189,7 @@ public class MainFragmentPresenter {
                 }
                 gMap.put("fName", map.get(GetFilesUtils.FILE_INFO_NAME));
                 gMap.put("fPath", map.get(GetFilesUtils.FILE_INFO_PATH));
+                gMap.put("fSelect", 0);
                 mainFragmentModel.getList().add(gMap);
             }
         } else {
@@ -215,6 +216,13 @@ public class MainFragmentPresenter {
      */
     public String getPathPosition(int position) {
         return mainFragmentModel.getPathList().get(position).getPathName();
+    }
+
+    /**
+     * 获取是否选择
+     */
+    public int getIsSelectPosition(int position) {
+        return (int) mainFragmentModel.getList().get(position).get("fSelect");
     }
 
     /**
@@ -270,7 +278,7 @@ public class MainFragmentPresenter {
             stringBuffer.append(mainFragmentModel.getPathList().get(i).getPathName()).append("/");
         }
 
-        Log.i("fpath", stringBuffer+"");
+        Log.i("fpath", stringBuffer + "");
 
         // 开新线程加载列表
         new Thread(() -> {
@@ -281,5 +289,54 @@ public class MainFragmentPresenter {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    /**
+     * 设置显示选择
+     */
+    public void setListVisibilitySelect() {
+
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            mainFragmentModel.getList().get(i).put("fSelect", 1);
+        }
+
+        mainFragmentModel.setSelect(true);
+    }
+
+    /**
+     * 设置不显示选择
+     */
+    public void setListVisibilityUnSelect() {
+
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            mainFragmentModel.getList().get(i).put("fSelect", 0);
+        }
+
+        mainFragmentModel.setSelect(false);
+    }
+
+    /**
+     * 设置指定Item选择状态
+     */
+    public void setListItemSelect(int position) {
+        if ((int) mainFragmentModel.getList().get(position).get("fSelect") == 1) {
+            mainFragmentModel.getList().get(position).put("fSelect", 2);
+        } else {
+            mainFragmentModel.getList().get(position).put("fSelect", 1);
+        }
+    }
+
+    /**
+     * 获取当前列表的状态
+     */
+    public boolean getIsShowSelectList() {
+        return mainFragmentModel.isSelect();
+    }
+
+    /**
+     * 获取当前列表的数量
+     */
+    public int getListSize() {
+        return mainFragmentModel.getList().size();
     }
 }

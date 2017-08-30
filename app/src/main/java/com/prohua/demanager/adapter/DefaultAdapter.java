@@ -20,6 +20,10 @@ public class DefaultAdapter extends DefaultRVAdapter {
     protected void onBindItemViewHolder(DefaultViewHolder holder, int position) {
         onBindItemView.onBindItemViewHolder(holder,position);
         holder.itemView.setOnClickListener(view -> onBindItemClick.onBindItemClick(view, position));
+        holder.itemView.setOnLongClickListener(view -> {
+            onBindItemLongClick.onBindItemLongClick(view, position);
+            return false;
+        });
     }
 
     private OnBindItemView onBindItemView;
@@ -42,4 +46,13 @@ public class DefaultAdapter extends DefaultRVAdapter {
         void onBindItemClick(View view, int position);
     }
 
+    private OnBindItemLongClick onBindItemLongClick;
+
+    public void setOnBindItemLongClick(OnBindItemLongClick onBindItemLongClick) {
+        this.onBindItemLongClick = onBindItemLongClick;
+    }
+
+    public interface OnBindItemLongClick {
+        void onBindItemLongClick(View view, int position);
+    }
 }

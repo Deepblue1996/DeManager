@@ -18,6 +18,16 @@ public class MainFragmentModel implements MainFragmentModelInterface {
     // 基础路径
     private String baseFile;
 
+    private boolean select = false;
+
+    public boolean isSelect() {
+        return select;
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
+    }
+
     public List<Map<String, Object>> getList() {
         return list;
     }

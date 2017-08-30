@@ -108,12 +108,49 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
         // 列表适配器
         if (itemAdapter == null) {
+
+            // 初始化适配器
             itemAdapter = new DefaultAdapter(getContext(), mainFragmentEvent.getList(), R.layout.item_home_recycler);
+
+            // 列表的视图处理
             itemAdapter.setOnBindItemView((holder, position) -> {
+
+                // 名称
                 holder.text(R.id.f_path, mainFragmentPresenter.getPositionName(position));
+
+                // 图标
                 holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
+
+                // 选择的状态
+                if (mainFragmentPresenter.getIsSelectPosition(position) == 1) {
+                    holder.itemView.findViewById(R.id.i_select).setVisibility(View.VISIBLE);
+                    holder.image(R.id.i_select, R.mipmap.unselect);
+                } else if (mainFragmentPresenter.getIsSelectPosition(position) == 2) {
+                    holder.itemView.findViewById(R.id.i_select).setVisibility(View.VISIBLE);
+                    holder.image(R.id.i_select, R.mipmap.select);
+                } else {
+                    holder.itemView.findViewById(R.id.i_select).setVisibility(View.GONE);
+                }
             });
-            itemAdapter.setOnBindItemClick((view, position) -> mainFragmentPresenter.innerName(position));
+
+            // 点击事件
+            itemAdapter.setOnBindItemClick((view, position) -> {
+                if (!mainFragmentPresenter.getIsShowSelectList()) {
+                    mainFragmentPresenter.innerName(position);
+                } else {
+                    mainFragmentPresenter.setListItemSelect(position);
+                    itemAdapter.notifyItemChanged(position);
+                }
+            });
+
+            // 长点击事件
+            itemAdapter.setOnBindItemLongClick((view, position) -> {
+                if (!mainFragmentPresenter.getIsShowSelectList()) {
+                    mainFragmentPresenter.setListVisibilitySelect();
+                    // 这里我这样写有动画 当然可以用itemAdapter.notifyDataSetChanged();
+                    itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
+                }
+            });
             recyclerView.setAdapter(itemAdapter);
         } else {
             // 刷新列表
@@ -121,7 +158,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         }
 
         // 判断是否是空列表
-        if(mainFragmentEvent.getList().size() == 0) {
+        if (mainFragmentEvent.getList().size() == 0) {
             haveNotFile.setVisibility(View.VISIBLE);
         } else {
             haveNotFile.setVisibility(View.GONE);
@@ -140,6 +177,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             headerAdapter.setOnBindItemClick((view, position) ->
                     mainFragmentPresenter.selectPath(position)
             );
+            headerAdapter.setOnBindItemLongClick((view, position) -> {
+
+            });
 
             recyclerViewHeader.setAdapter(headerAdapter);
         } else {
@@ -159,6 +199,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 headerAdapter.setOnBindItemClick((view, position) ->
                         mainFragmentPresenter.selectPath(position)
                 );
+                headerAdapter.setOnBindItemLongClick((view, position) -> {
+
+                });
 
                 recyclerViewHeader.setAdapter(headerAdapter);
             }
@@ -177,24 +220,30 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @Override
     public boolean onBackPressedSupport() {
 
-        if (mainFragmentPresenter.getPathListSize() == 1) {
-            // LogoFragment
-            if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
-                pop();
-            } else {
-                if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
-                    // 杀死线程,完全退出
-                    //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
-                    //System.exit(0);
-                    _mActivity.finish();
+        // 不是选择的状态
+        if(!mainFragmentPresenter.getIsShowSelectList()) {
+            if (mainFragmentPresenter.getPathListSize() == 1) {
+                // LogoFragment
+                if (_mActivity.getSupportFragmentManager().getBackStackEntryCount() > 2) {
+                    pop();
                 } else {
-                    TOUCH_TIME = System.currentTimeMillis();
-                    // TODO: UI提示
-                    Toast.makeText(getContext(), "再按一次,确定退出", Toast.LENGTH_LONG).show();
+                    if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
+                        // 杀死线程,完全退出
+                        //android.os.Process.killProcess(android.os.Process.myPid());    //获取PID
+                        //System.exit(0);
+                        _mActivity.finish();
+                    } else {
+                        TOUCH_TIME = System.currentTimeMillis();
+                        // TODO: UI提示
+                        Toast.makeText(getContext(), "再按一次,确定退出", Toast.LENGTH_LONG).show();
+                    }
                 }
+            } else {
+                mainFragmentPresenter.beforePath();
             }
-        } else {
-            mainFragmentPresenter.beforePath();
+        } else { // 取消选择
+            mainFragmentPresenter.setListVisibilityUnSelect();
+            itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
         }
         return true;
     }
