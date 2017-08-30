@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.github.florent37.viewanimator.AnimationListener;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.prohua.demanager.R;
 import com.prohua.demanager.adapter.DefaultAdapter;
@@ -44,6 +45,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     RecyclerView recyclerView;
     @BindView(R.id.have_not_file)
     LinearLayout haveNotFile;
+    @BindView(R.id.select_view)
+    LinearLayout selectBarView;
 
     @BindView(R.id.i_refresh)
     ImageView i_refresh;
@@ -160,6 +163,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             itemAdapter.setOnBindItemLongClick((view, position) -> {
                 if (!mainFragmentPresenter.getIsShowSelectList()) {
                     mainFragmentPresenter.setListVisibilitySelect();
+                    // 显示工具栏
+                    selectBarView.setVisibility(View.VISIBLE);
+                    ViewAnimator.animate(selectBarView).translationY(45,0).duration(100).start();
                     // 这里我这样写有动画 当然可以用itemAdapter.notifyDataSetChanged();
                     itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
                 }
@@ -263,6 +269,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 mainFragmentPresenter.beforePath();
             }
         } else { // 取消选择
+            ViewAnimator.animate(selectBarView).translationY(0,45).duration(100).onStop(() -> selectBarView.setVisibility(View.GONE)).start();
+
             mainFragmentPresenter.setListVisibilityUnSelect();
             itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
         }

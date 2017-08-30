@@ -5,22 +5,44 @@
     android:background="#eee"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:layout_marginStart="10dp"
+            android:id="@+id/i_window"
+            android:layout_toEndOf="@id/i_menu"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/computer_fill" />
+
+        <ImageView
+            android:id="@+id/i_menu"
+            android:layout_marginStart="5dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/enterinto_fill" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
-        android:paddingStart="5dp"
         android:background="#fff"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="5dp">
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/i_refresh"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:src="@mipmap/refresh" />
+            android:src="@mipmap/refresh"
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_header_view"
@@ -40,7 +62,62 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@id/select_view"
             android:scrollbars="vertical" />
+
+        <LinearLayout
+            android:translationY="45dp"
+            android:id="@+id/select_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#eee"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/i_list"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/order" />
+
+            <ImageView
+                android:id="@+id/i_add"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/add" />
+
+            <ImageView
+                android:id="@+id/i_select_u"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/flip" />
+
+            <ImageView
+                android:id="@+id/i_paste"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/document" />
+
+            <ImageView
+                android:id="@+id/i_delete"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/empty" />
+
+            <ImageView
+                android:id="@+id/i_close"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:src="@mipmap/close" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/have_not_file"
