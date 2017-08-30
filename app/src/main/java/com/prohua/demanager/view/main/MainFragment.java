@@ -134,10 +134,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getPositionImg(position)));
 
                 // 选择的状态
-                if (mainFragmentPresenter.getIsSelectPosition(position) == 1) {
-                    holder.itemView.findViewById(R.id.i_select).setVisibility(View.VISIBLE);
-                    holder.image(R.id.i_select, R.mipmap.unselect);
-                } else if (mainFragmentPresenter.getIsSelectPosition(position) == 2) {
+                if (mainFragmentPresenter.getIsSelectPosition(position) == 2) {
                     holder.itemView.findViewById(R.id.i_select).setVisibility(View.VISIBLE);
                     holder.image(R.id.i_select, R.mipmap.select);
                 } else {
@@ -164,6 +161,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 if (!mainFragmentPresenter.getIsShowSelectList()) {
                     mainFragmentPresenter.setListVisibilitySelect();
                     // 显示工具栏
+                    mainFragmentPresenter.setListItemSelect(position);
                     selectBarView.setVisibility(View.VISIBLE);
                     ViewAnimator.animate(selectBarView).translationY(45,0).duration(100).start();
                     // 这里我这样写有动画 当然可以用itemAdapter.notifyDataSetChanged();
