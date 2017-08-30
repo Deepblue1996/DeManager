@@ -63,6 +63,7 @@ public class MainFragmentPresenter {
             // 打开文件
             str = getFilePath(getPositionName(position)).toString();
             if (!str.equals("not file")) {
+                mainFragmentInterface.stopRefreshAnimator();
                 mainFragmentInterface.openFiles(str);
             } else {
                 Log.i("open file code", "400");
@@ -328,7 +329,7 @@ public class MainFragmentPresenter {
     }
 
     /**
-     *
+     * 设置该路径列表是否已经滚动的值
      */
     public void setPathItemSelect(int hasScroll) {
         mainFragmentModel.getPathList().get(getPathListSize()-1).setHasScroll(hasScroll);
@@ -336,7 +337,7 @@ public class MainFragmentPresenter {
 
 
     /**
-     *
+     * 获取该路径列表是否已经滚动的值
      */
     public int getPathItemSelect() {
         return mainFragmentModel.getPathList().get(getPathListSize()-1).getHasScroll();
