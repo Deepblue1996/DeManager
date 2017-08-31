@@ -7,28 +7,28 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:visibility="gone"
-        android:padding="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:visibility="gone">
 
         <TextView
-            android:text=""
-            android:textColor="#888"
-            android:textSize="12sp"
-            android:layout_marginStart="10dp"
             android:id="@+id/t_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text=""
+            android:textColor="#888"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
         android:background="#fff"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -51,46 +51,51 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:visibility="gone"
-        android:padding="3dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="3dp"
+        android:visibility="gone">
+
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
-                android:src="@mipmap/document_fill"
                 android:layout_width="25dp"
-                android:layout_height="25dp" />
+                android:layout_height="25dp"
+                android:src="@mipmap/document_fill" />
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="选择操作"
                 android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="已选择16个文件和3个目录"
                 android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="12sp" />
+
             <ImageView
-                android:layout_marginTop="@dimen/x1"
-                android:src="@mipmap/select"
                 android:layout_width="16dp"
-                android:layout_height="16dp" />
+                android:layout_height="16dp"
+                android:layout_marginTop="@dimen/x1"
+                android:src="@mipmap/select" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -108,7 +113,6 @@
             android:scrollbars="vertical" />
 
         <LinearLayout
-            android:translationY="45dp"
             android:id="@+id/select_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,6 +120,7 @@
             android:background="#eee"
             android:orientation="horizontal"
             android:padding="10dp"
+            android:translationY="45dp"
             android:visibility="gone">
 
             <ImageView

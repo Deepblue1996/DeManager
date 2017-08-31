@@ -162,7 +162,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     // 显示工具栏
                     mainFragmentPresenter.setListItemSelect(position);
                     selectBarView.setVisibility(View.VISIBLE);
-                    ViewAnimator.animate(selectBarView).translationY(45,0).duration(100).start();
+                    ViewAnimator.animate(selectBarView).translationY(45, 0).duration(100).start();
                     // 这里我这样写有动画 当然可以用itemAdapter.notifyDataSetChanged();
                     itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
                 }
@@ -194,9 +194,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             headerAdapter.setOnBindItemView((holder, position) ->
                     holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
             );
-            headerAdapter.setOnBindItemClick((view, position) ->
-                    mainFragmentPresenter.selectPath(position)
-            );
+            headerAdapter.setOnBindItemClick((view, position) -> {
+                if (!mainFragmentPresenter.getIsShowSelectList()) {
+                    mainFragmentPresenter.selectPath(position);
+                }
+            });
             headerAdapter.setOnBindItemLongClick((view, position) -> {
 
             });
@@ -217,10 +219,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                         holder.text(R.id.path_name, mainFragmentPresenter.getPathPosition(position))
                 );
                 headerAdapter.setOnBindItemClick((view, position) -> {
-                    if (mainFragmentPresenter.getPathListSize() - 1 == position) {
-                        mainFragmentPresenter.setPathItemSelect(2);
+                    if (!mainFragmentPresenter.getIsShowSelectList()) {
+                        if (mainFragmentPresenter.getPathListSize() - 1 == position) {
+                            mainFragmentPresenter.setPathItemSelect(2);
+                        }
+                        mainFragmentPresenter.selectPath(position);
                     }
-                    mainFragmentPresenter.selectPath(position);
                 });
                 headerAdapter.setOnBindItemLongClick((view, position) -> {
 
@@ -266,7 +270,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 mainFragmentPresenter.beforePath();
             }
         } else { // 取消选择
-            ViewAnimator.animate(selectBarView).translationY(0,45).duration(100).onStop(() -> selectBarView.setVisibility(View.GONE)).start();
+            ViewAnimator.animate(selectBarView).translationY(0, 45).duration(100).onStop(() -> selectBarView.setVisibility(View.GONE)).start();
 
             mainFragmentPresenter.setListVisibilityUnSelect();
             itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
