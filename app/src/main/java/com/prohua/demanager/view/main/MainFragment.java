@@ -1,5 +1,6 @@
 package com.prohua.demanager.view.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.florent37.viewanimator.AnimationListener;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.prohua.demanager.R;
 import com.prohua.demanager.adapter.DefaultAdapter;
@@ -26,6 +30,7 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.yokeyword.fragmentation.SupportFragment;
 
 import static com.prohua.demanager.util.MimeUtils.getMIMEType;
@@ -47,8 +52,26 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     @BindView(R.id.select_view)
     LinearLayout selectBarView;
 
+    @BindView(R.id.top_bar_select_stats)
+    RelativeLayout topBarSelectView;
+
     @BindView(R.id.i_refresh)
     ImageView i_refresh;
+
+    @BindView(R.id.select_size)
+    TextView tSelectSize;
+
+    // 选择状态下的菜单
+    @BindView(R.id.i_list)
+    ImageView i_list;
+    @BindView(R.id.i_add)
+    ImageView i_add;
+    @BindView(R.id.i_select_u)
+    ImageView i_select_u;
+    @BindView(R.id.i_delete)
+    ImageView i_delete;
+    @BindView(R.id.i_close)
+    ImageView i_close;
 
     // 刷新动画
     private ViewAnimator refreshValueAnimator;
@@ -101,6 +124,63 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
         linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewHeader.setLayoutManager(linearLayoutManager2);
+    }
+
+    /**
+     * 选择菜单点击事件
+     */
+    @SuppressLint("DefaultLocale")
+    @OnClick({R.id.i_list, R.id.i_add, R.id.i_select_u, R.id.i_delete, R.id.i_close})
+    public void onClickSelectMenu(ImageView v) {
+        switch (v.getId()) {
+            case R.id.i_list:
+
+                boolean turnAnimate = false;
+                if (mainFragmentPresenter.getSListSize() > 0) {
+                    turnAnimate = true;
+                }
+                if (mainFragmentPresenter.addInSList() > 0) {
+
+                    // 测量
+                    topBarSelectView.measure(0, 0);
+
+                    // 动画
+                    boolean finalTurnAnimate = turnAnimate;
+                    ViewAnimator.animate(recyclerView).translationY(0, topBarSelectView.getMeasuredHeight()).duration(200).onStart(new AnimationListener.Start() {
+                        @Override
+                        public void onStart() {
+
+                            ViewAnimator.animate(recyclerView).translationY(topBarSelectView.getMeasuredHeight(), 0).duration(200).start();
+
+                            topBarSelectView.setVisibility(View.VISIBLE);
+
+                            i_list.setImageResource(R.mipmap.order_fill);
+
+                            tSelectSize.setText(
+                                    String.format("已选择%d个文件和%d个目录",
+                                            mainFragmentPresenter.getSListFileSize(),
+                                            mainFragmentPresenter.getSListDirSize()));
+                            if (!finalTurnAnimate) {
+                                ViewAnimator.animate(topBarSelectView).alpha(0f, 1f).duration(100).start();
+                            }
+                        }
+                    }).start();
+
+                } else {
+
+                    topBarSelectView.setVisibility(View.GONE);
+                    i_list.setImageResource(R.mipmap.order);
+                }
+                break;
+            case R.id.i_add:
+                break;
+            case R.id.i_select_u:
+                break;
+            case R.id.i_delete:
+                break;
+            case R.id.i_close:
+                break;
+        }
     }
 
     /**
@@ -161,10 +241,19 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     mainFragmentPresenter.setListVisibilitySelect();
                     // 显示工具栏
                     mainFragmentPresenter.setListItemSelect(position);
+
                     selectBarView.setVisibility(View.VISIBLE);
+
+                    if (mainFragmentPresenter.getSListSize() > 0) {
+                        topBarSelectView.setVisibility(View.VISIBLE);
+                    }
+
+                    // 恢复当前列表已添加进选择列表的条目
+                    mainFragmentPresenter.setSListToList();
+
                     ViewAnimator.animate(selectBarView).translationY(45, 0).duration(100).start();
-                    // 这里我这样写有动画 当然可以用itemAdapter.notifyDataSetChanged();
-                    itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
+                    // 刷新
+                    itemAdapter.notifyDataSetChanged();
                 }
             });
             recyclerView.setAdapter(itemAdapter);
@@ -267,6 +356,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             ViewAnimator.animate(selectBarView).translationY(0, 45).duration(100).onStop(() -> selectBarView.setVisibility(View.GONE)).start();
 
             mainFragmentPresenter.setListVisibilityUnSelect();
+
+            if (mainFragmentPresenter.getSListSize() == 0) {
+                topBarSelectView.setVisibility(View.GONE);
+            }
+
             itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
         }
         return true;

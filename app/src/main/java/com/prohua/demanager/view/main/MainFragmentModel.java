@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class MainFragmentModel implements MainFragmentModelInterface {
 
+    // 已选择文件列表数据
+    private List<Map<String, Object>> sList = new ArrayList<>();
     // 文件列表数据
     private List<Map<String, Object>> list = new ArrayList<>();
     // 路径
@@ -26,6 +28,14 @@ public class MainFragmentModel implements MainFragmentModelInterface {
 
     public void setSelect(boolean select) {
         this.select = select;
+    }
+
+    public List<Map<String, Object>> getsList() {
+        return sList;
+    }
+
+    public void setsList(List<Map<String, Object>> sList) {
+        this.sList = sList;
     }
 
     public List<Map<String, Object>> getList() {

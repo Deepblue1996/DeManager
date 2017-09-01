@@ -321,6 +321,7 @@ public class MainFragmentPresenter {
      * 设置指定Item选择状态
      */
     public void setListItemSelect(int position) {
+
         if ((int) mainFragmentModel.getList().get(position).get("fSelect") == 1) {
             mainFragmentModel.getList().get(position).put("fSelect", 2);
         } else {
@@ -329,12 +330,104 @@ public class MainFragmentPresenter {
     }
 
     /**
+     * 添加当前选择的进选择列表
+     *
+     * @return 已选择数量
+     */
+    public int addInSList() {
+
+        // 清空当前列表的数据,再添加进入
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+
+                for (int j = 0; j < mainFragmentModel.getsList().size(); j++) {
+                    // 如果已添加,则不添加
+                    if (mainFragmentModel.getsList().get(j).get("fPath").equals(mainFragmentModel.getList().get(i).get("fPath")) &&
+                            mainFragmentModel.getsList().get(j).get("fName").equals(mainFragmentModel.getList().get(i).get("fName"))) {
+                        mainFragmentModel.getsList().remove(j);
+                    }
+                }
+        }
+
+
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            // 处理已选择的
+            if ((int) mainFragmentModel.getList().get(i).get("fSelect") == 2) {
+                mainFragmentModel.getsList().add(mainFragmentModel.getList().get(i));
+            }
+        }
+
+        return mainFragmentModel.getsList().size();
+    }
+
+    /**
+     * 清空已选择的列表
+     */
+    public void clearSList() {
+        mainFragmentModel.getsList().clear();
+    }
+
+    /**
+     * 获取已选择的数量
+     *
+     * @return 已选择数量
+     */
+    public int getSListSize() {
+        return mainFragmentModel.getsList().size();
+    }
+
+
+    /**
+     * 获取已选择的文件数量
+     *
+     * @return 已选择数量
+     */
+    public int getSListFileSize() {
+        int fileSize = 0;
+        for (int i = 0; i < mainFragmentModel.getsList().size(); i++) {
+            if (mainFragmentModel.getsList().get(i).get(GetFilesUtils.FILE_INFO_ISFOLDER).equals(false)) {
+                fileSize++;
+            }
+        }
+        return fileSize;
+    }
+
+    /**
+     * 获取已选择的目录数量
+     *
+     * @return 已选择数量
+     */
+    public int getSListDirSize() {
+        int dirSize = 0;
+        for (int i = 0; i < mainFragmentModel.getsList().size(); i++) {
+            if (mainFragmentModel.getsList().get(i).get(GetFilesUtils.FILE_INFO_ISFOLDER).equals(true)) {
+                dirSize++;
+            }
+        }
+        return dirSize;
+    }
+
+    /**
+     * 设置当前目录列表在已选择的状态
+     */
+    public void setSListToList() {
+
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            for (int j = 0; j < mainFragmentModel.getsList().size(); j++) {
+                if (mainFragmentModel.getsList().get(j).get("fPath").equals(mainFragmentModel.getList().get(i).get("fPath")) &&
+                        mainFragmentModel.getsList().get(j).get("fName").equals(mainFragmentModel.getList().get(i).get("fName"))) {
+                    mainFragmentModel.getList().get(i).put("fSelect", 2);
+                }
+            }
+        }
+
+    }
+
+    /**
      * 设置该路径列表是否已经滚动的值
      */
     public void setPathItemSelect(int hasScroll) {
         mainFragmentModel.getPathList().get(getPathListSize() - 1).setHasScroll(hasScroll);
     }
-
 
     /**
      * 获取该路径列表是否已经滚动的值
