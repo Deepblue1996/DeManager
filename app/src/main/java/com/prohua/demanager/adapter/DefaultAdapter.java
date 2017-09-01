@@ -17,13 +17,25 @@ public class DefaultAdapter extends DefaultRVAdapter {
     }
 
     @Override
-    protected void onBindItemViewHolder(DefaultViewHolder holder, int position) {
-        onBindItemView.onBindItemViewHolder(holder,position);
-        holder.itemView.setOnClickListener(view -> onBindItemClick.onBindItemClick(view, position));
-        holder.itemView.setOnLongClickListener(view -> {
-            onBindItemLongClick.onBindItemLongClick(view, position);
-            return false;
-        });
+    protected void onBindItemViewHolder(DefaultViewHolder holder, final int position) {
+        onBindItemView.onBindItemViewHolder(holder, position);
+        if (onBindItemClick != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBindItemClick.onBindItemClick(v, position);
+                }
+            });
+        }
+        if (onBindItemLongClick != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onBindItemLongClick.onBindItemLongClick(v, position);
+                    return true;
+                }
+            });
+        }
     }
 
     private OnBindItemView onBindItemView;

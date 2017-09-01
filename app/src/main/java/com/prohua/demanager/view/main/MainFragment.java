@@ -199,9 +199,6 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     mainFragmentPresenter.selectPath(position);
                 }
             });
-            headerAdapter.setOnBindItemLongClick((view, position) -> {
-
-            });
 
             recyclerViewHeader.setAdapter(headerAdapter);
         } else {
@@ -225,9 +222,6 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                         }
                         mainFragmentPresenter.selectPath(position);
                     }
-                });
-                headerAdapter.setOnBindItemLongClick((view, position) -> {
-
                 });
 
                 recyclerViewHeader.setAdapter(headerAdapter);
