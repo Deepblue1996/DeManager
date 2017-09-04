@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -136,6 +137,19 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(getContext());
         linearLayoutManager3.setOrientation(LinearLayoutManager.VERTICAL);
         sRecyclerView.setLayoutManager(linearLayoutManager3);
+
+        moveItemView.setOnTouchListener((view, motionEvent) -> {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    sRecyclerView.measure(0,0);
+                    LinearLayout.LayoutParams layoutParams =(LinearLayout.LayoutParams) sRecyclerView.getLayoutParams();
+                    layoutParams.height = (int) ((int) motionEvent.getRawY()-sRecyclerView.getY());
+                    sRecyclerView.setLayoutParams(layoutParams);
+                    break;
+
+            }
+            return true;
+        });
     }
 
     /**
