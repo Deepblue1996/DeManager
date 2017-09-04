@@ -123,24 +123,26 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
      */
     private void initView() {
 
-        //设置布局管理器
+        // 设置布局管理器
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        //设置布局管理器
+        // 设置布局管理器
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
         linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewHeader.setLayoutManager(linearLayoutManager2);
 
-        //设置布局管理器
+        // 设置布局管理器
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(getContext());
         linearLayoutManager3.setOrientation(LinearLayoutManager.VERTICAL);
         sRecyclerView.setLayoutManager(linearLayoutManager3);
 
+        // 请无视这里的警告, 因为这里会把这个View的触摸事件占领了, 所以警告
         moveItemView.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_MOVE:
+                    // 拖动
                     sRecyclerView.measure(0,0);
                     LinearLayout.LayoutParams layoutParams =(LinearLayout.LayoutParams) sRecyclerView.getLayoutParams();
                     layoutParams.height = (int) ((int) motionEvent.getRawY()-sRecyclerView.getY());
