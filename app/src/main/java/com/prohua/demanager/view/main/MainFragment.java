@@ -432,6 +432,7 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 .animate(i_refresh)
                 .rotation(0, 360)
                 .duration(500)
+                .repeatCount(-1)
                 .start();
     }
 
