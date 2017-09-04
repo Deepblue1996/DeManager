@@ -14,15 +14,31 @@ import android.widget.TextView;
 
 public class DefaultViewHolder extends RecyclerView.ViewHolder {
 
-
+    /**
+     * 构造器
+     *
+     * @param view
+     */
     public DefaultViewHolder(View view) {
         super(view);
     }
 
+    /**
+     * 控件基于View,方便转换,调用
+     *
+     * @param id 控件的id
+     * @return View
+     */
     private View findViewById(int id) {
         return id == 0 ? itemView : itemView.findViewById(id);
     }
 
+    /**
+     * 根据id,设置TextView内容
+     *
+     * @param id 控件的id
+     * @return 当前view, 链式
+     */
     public DefaultViewHolder text(int id, CharSequence sequence) {
         View view = findViewById(id);
         if (view instanceof TextView) {
@@ -31,6 +47,13 @@ public class DefaultViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
+    /**
+     * 根据id,设置Res到TextView内容
+     *
+     * @param id        控件的id
+     * @param stringRes Res.string.id
+     * @return 当前view, 链式
+     */
     public DefaultViewHolder text(int id, @StringRes int stringRes) {
         View view = findViewById(id);
         if (view instanceof TextView) {
@@ -39,6 +62,13 @@ public class DefaultViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
+    /**
+     * 根据id,设置Res到TextView颜色
+     *
+     * @param id      控件的id
+     * @param colorId Res.color.id
+     * @return 当前view, 链式
+     */
     public DefaultViewHolder textColorId(int id, int colorId) {
         View view = findViewById(id);
         if (view instanceof TextView) {
@@ -47,6 +77,13 @@ public class DefaultViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
+    /**
+     * 根据id,设置Res到ImageView资源
+     *
+     * @param id      控件的id
+     * @param imageId Res.mipmap.id
+     * @return 当前view, 链式
+     */
     public DefaultViewHolder image(int id, int imageId) {
         View view = findViewById(id);
         if (view instanceof ImageView) {
