@@ -47,10 +47,15 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     RecyclerView recyclerViewHeader;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.select_recycler)
+    RecyclerView sRecyclerView;
     @BindView(R.id.have_not_file)
     LinearLayout haveNotFile;
     @BindView(R.id.select_view)
     LinearLayout selectBarView;
+
+    @BindView(R.id.move_item)
+    LinearLayout moveItemView;
 
     @BindView(R.id.top_bar_select_stats)
     RelativeLayout topBarSelectView;
@@ -82,6 +87,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     private DefaultAdapter headerAdapter;
     // 列表item
     private DefaultAdapter itemAdapter;
+    // 选择列表item
+    private DefaultAdapter selectAdapter;
 
     // 再点一次退出, 程序间隔时间设置
     private static final long WAIT_TIME = 2000L;
@@ -124,6 +131,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
         linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewHeader.setLayoutManager(linearLayoutManager2);
+
+        //设置布局管理器
+        LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(getContext());
+        linearLayoutManager3.setOrientation(LinearLayoutManager.VERTICAL);
+        sRecyclerView.setLayoutManager(linearLayoutManager3);
     }
 
     /**
@@ -137,6 +149,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
                 boolean turnAnimate = false;
                 if (mainFragmentPresenter.getSListSize() > 0) {
+                    sRecyclerView.setVisibility(View.GONE);
+                    moveItemView.setVisibility(View.GONE);
                     turnAnimate = true;
                 }
                 if (mainFragmentPresenter.addInSList() > 0) {
@@ -163,11 +177,15 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                             if (!finalTurnAnimate) {
                                 ViewAnimator.animate(topBarSelectView).alpha(0f, 1f).duration(100).start();
                             }
+
+                            sRecyclerView.setVisibility(View.VISIBLE);
+                            initSelectRecyclerViewAdapter();
+
+                            moveItemView.setVisibility(View.VISIBLE);
                         }
                     }).start();
 
                 } else {
-
                     topBarSelectView.setVisibility(View.GONE);
                     i_list.setImageResource(R.mipmap.order);
                 }
@@ -188,6 +206,31 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
      */
     public void initData() {
         mainFragmentPresenter = new MainFragmentPresenter(this);
+    }
+
+    /**
+     * 初始化选择列表适配器
+     */
+    public void initSelectRecyclerViewAdapter() {
+        if(selectAdapter == null) {
+            selectAdapter = new DefaultAdapter(getContext(), mainFragmentPresenter.getSList(), R.layout.item_home_recycler);
+
+            // 列表的视图处理
+            selectAdapter.setOnBindItemView((holder, position) -> {
+
+                // 名称
+                holder.text(R.id.f_path, mainFragmentPresenter.getSPositionName(position));
+
+                // 图标
+                holder.image(R.id.img, Integer.valueOf(mainFragmentPresenter.getSPositionImg(position)));
+
+                // 选择的状态, 默认关闭显示
+                holder.itemView.findViewById(R.id.i_select).setVisibility(View.GONE);
+            });
+            sRecyclerView.setAdapter(selectAdapter);
+        } else {
+            selectAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

@@ -207,10 +207,24 @@ public class MainFragmentPresenter {
     }
 
     /**
+     * 获取名称
+     */
+    public String getSPositionName(int position) {
+        return mainFragmentModel.getsList().get(position).get("fName").toString();
+    }
+
+    /**
      * 获取图片
      */
     public String getPositionImg(int position) {
         return mainFragmentModel.getList().get(position).get("fImg").toString();
+    }
+
+    /**
+     * 获取图片
+     */
+    public String getSPositionImg(int position) {
+        return mainFragmentModel.getsList().get(position).get("fImg").toString();
     }
 
     /**
@@ -448,5 +462,9 @@ public class MainFragmentPresenter {
      */
     public int getListSize() {
         return mainFragmentModel.getList().size();
+    }
+
+    public List<Map<String, Object>> getSList() {
+        return mainFragmentModel.getsList();
     }
 }

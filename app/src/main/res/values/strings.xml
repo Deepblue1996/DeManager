@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DeManager</string>
     <string name="have_not_file">没有文件</string>
+    <string name="item_move">上已选择的列表 - 本地文件列表</string>
 </resources>
