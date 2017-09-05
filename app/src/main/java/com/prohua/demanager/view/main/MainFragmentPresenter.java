@@ -467,4 +467,12 @@ public class MainFragmentPresenter {
     public List<Map<String, Object>> getSList() {
         return mainFragmentModel.getsList();
     }
+
+    /**
+     * 在已选择列表清除指定选择
+     * @param position
+     */
+    public void clearPositionSList(int position) {
+        mainFragmentModel.getsList().remove(position);
+    }
 }

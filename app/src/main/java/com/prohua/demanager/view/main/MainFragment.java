@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -143,10 +144,15 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     // 拖动
-                    sRecyclerView.measure(0,0);
-                    LinearLayout.LayoutParams layoutParams =(LinearLayout.LayoutParams) sRecyclerView.getLayoutParams();
-                    layoutParams.height = (int) ((int) motionEvent.getRawY()-sRecyclerView.getY());
-                    sRecyclerView.setLayoutParams(layoutParams);
+                    sRecyclerView.measure(0, 0);
+
+                    DisplayMetrics dm = new DisplayMetrics();
+                    _mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    if (motionEvent.getRawY() > sRecyclerView.getY() && motionEvent.getRawY() < dm.heightPixels - 40) {
+                        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) sRecyclerView.getLayoutParams();
+                        layoutParams.height = (int) ((int) motionEvent.getRawY() - sRecyclerView.getY());
+                        sRecyclerView.setLayoutParams(layoutParams);
+                    }
                     break;
 
             }
@@ -212,7 +218,16 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                 break;
             case R.id.i_delete:
                 break;
-            case R.id.i_close:
+            case R.id.i_close: // 取消选择
+                ViewAnimator.animate(selectBarView).translationY(0, 45).duration(100).onStop(() -> selectBarView.setVisibility(View.GONE)).start();
+
+                mainFragmentPresenter.setListVisibilityUnSelect();
+
+                if (mainFragmentPresenter.getSListSize() == 0) {
+                    topBarSelectView.setVisibility(View.GONE);
+                }
+
+                itemAdapter.notifyItemRangeChanged(0, mainFragmentPresenter.getListSize());
                 break;
         }
     }
@@ -227,8 +242,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
     /**
      * 初始化选择列表适配器
      */
+    @SuppressLint("DefaultLocale")
     public void initSelectRecyclerViewAdapter() {
-        if(selectAdapter == null) {
+        if (selectAdapter == null) {
             selectAdapter = new DefaultAdapter(getContext(), mainFragmentPresenter.getSList(), R.layout.item_home_recycler);
 
             // 列表的视图处理
@@ -242,6 +258,25 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
 
                 // 选择的状态, 默认关闭显示
                 holder.itemView.findViewById(R.id.i_select).setVisibility(View.GONE);
+
+                // 删除按钮
+                holder.itemView.findViewById(R.id.i_delete).setVisibility(View.VISIBLE);
+                holder.itemView.findViewById(R.id.i_delete).setOnClickListener(view -> {
+                    mainFragmentPresenter.clearPositionSList(position);
+                    selectAdapter.notifyDataSetChanged();
+
+                    tSelectSize.setText(
+                            String.format("已选择%d个文件和%d个目录",
+                                    mainFragmentPresenter.getSListFileSize(),
+                                    mainFragmentPresenter.getSListDirSize()));
+
+                    if (mainFragmentPresenter.getSListSize() == 0) {
+                        sRecyclerView.setVisibility(View.GONE);
+                        moveItemView.setVisibility(View.GONE);
+                        topBarSelectView.setVisibility(View.GONE);
+                        i_list.setImageResource(R.mipmap.order);
+                    }
+                });
             });
             sRecyclerView.setAdapter(selectAdapter);
         } else {
