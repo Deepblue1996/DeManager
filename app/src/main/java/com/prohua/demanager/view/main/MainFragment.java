@@ -217,6 +217,9 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
             case R.id.i_add:
                 break;
             case R.id.i_select_u:
+                i_select_u.setImageResource(R.mipmap.flip_fill);
+                mainFragmentPresenter.choiceSelect();
+                itemAdapter.notifyDataSetChanged();
                 break;
             case R.id.i_delete:
                 break;
@@ -335,6 +338,11 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     mainFragmentPresenter.innerName(position);
                 } else {
                     mainFragmentPresenter.setListItemSelect(position);
+                    if(mainFragmentPresenter.selectIsChoice()) {
+                        i_select_u.setImageResource(R.mipmap.flip_fill);
+                    } else {
+                        i_select_u.setImageResource(R.mipmap.flip);
+                    }
                     itemAdapter.notifyItemChanged(position);
                 }
             });

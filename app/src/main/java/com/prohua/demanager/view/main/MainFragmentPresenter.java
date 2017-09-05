@@ -353,13 +353,13 @@ public class MainFragmentPresenter {
         // 清空当前列表的数据,再添加进入
         for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
 
-                for (int j = 0; j < mainFragmentModel.getsList().size(); j++) {
-                    // 如果已添加,则不添加
-                    if (mainFragmentModel.getsList().get(j).get("fPath").equals(mainFragmentModel.getList().get(i).get("fPath")) &&
-                            mainFragmentModel.getsList().get(j).get("fName").equals(mainFragmentModel.getList().get(i).get("fName"))) {
-                        mainFragmentModel.getsList().remove(j);
-                    }
+            for (int j = 0; j < mainFragmentModel.getsList().size(); j++) {
+                // 如果已添加,则不添加
+                if (mainFragmentModel.getsList().get(j).get("fPath").equals(mainFragmentModel.getList().get(i).get("fPath")) &&
+                        mainFragmentModel.getsList().get(j).get("fName").equals(mainFragmentModel.getList().get(i).get("fName"))) {
+                    mainFragmentModel.getsList().remove(j);
                 }
+            }
         }
 
 
@@ -470,6 +470,7 @@ public class MainFragmentPresenter {
 
     /**
      * 在已选择列表清除指定选择
+     *
      * @param position
      */
     public void clearPositionSList(int position) {
@@ -478,6 +479,7 @@ public class MainFragmentPresenter {
 
     /**
      * 判断是否已在选择列表
+     *
      * @param position
      * @return
      */
@@ -489,5 +491,63 @@ public class MainFragmentPresenter {
             }
         }
         return false;
+    }
+
+    /**
+     * 区位选择
+     */
+    public void choiceSelect() {
+        int one = -1, last = -1;
+        // 获取首个选择位置
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            if ((int) mainFragmentModel.getList().get(i).get("fSelect") == 2) {
+                one = i;
+                break;
+            }
+        }
+        // 获取最后选择位置
+        for (int j = mainFragmentModel.getList().size() - 1; j > 0; j--) {
+            if ((int) mainFragmentModel.getList().get(j).get("fSelect") == 2) {
+                last = j;
+                break;
+            }
+        }
+        // 中间全部设置选择
+        if (one != -1 && last != -1) {
+            for (int k = 0; k < mainFragmentModel.getList().size(); k++) {
+                if (k >= one && k <= last) {
+                    mainFragmentModel.getList().get(k).put("fSelect", 2);
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断当前是否可以区位选择
+     * @return
+     */
+    public boolean selectIsChoice() {
+        boolean one = false;
+
+        for (int i = 0; i < mainFragmentModel.getList().size(); i++) {
+            // 出现选择
+            if ((int) mainFragmentModel.getList().get(i).get("fSelect") == 2) {
+                // 开启第一次
+                if(!one) {
+                    one = true;
+                }
+            } else {
+                // 如果前面出现选择
+                if(one) {
+                    // 从最后开始判断到当前的位置,如果出现选择,则返回失败
+                    for (int j = mainFragmentModel.getList().size() - 1; j > i; j--) {
+                        if ((int) mainFragmentModel.getList().get(j).get("fSelect") == 2) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
