@@ -475,4 +475,19 @@ public class MainFragmentPresenter {
     public void clearPositionSList(int position) {
         mainFragmentModel.getsList().remove(position);
     }
+
+    /**
+     * 判断是否已在选择列表
+     * @param position
+     * @return
+     */
+    public boolean isInSList(int position) {
+        for (int i = 0; i < mainFragmentModel.getsList().size(); i++) {
+            if (mainFragmentModel.getsList().get(i).get("fPath").equals(mainFragmentModel.getList().get(position).get("fPath")) &&
+                    mainFragmentModel.getsList().get(i).get("fName").equals(mainFragmentModel.getList().get(position).get("fName"))) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -2,6 +2,7 @@ package com.prohua.demanager.view.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -206,11 +207,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                             moveItemView.setVisibility(View.VISIBLE);
                         }
                     }).start();
-
                 } else {
                     topBarSelectView.setVisibility(View.GONE);
                     i_list.setImageResource(R.mipmap.order);
                 }
+
+                itemAdapter.notifyDataSetChanged();
                 break;
             case R.id.i_add:
                 break;
@@ -312,6 +314,12 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                     holder.image(R.id.i_select, R.mipmap.select);
                 } else {
                     holder.itemView.findViewById(R.id.i_select).setVisibility(View.GONE);
+                }
+
+                if(mainFragmentPresenter.isInSList(position)) {
+                    holder.itemView.setBackgroundColor(Color.parseColor("#EEEEEE"));
+                } else {
+                    holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
             });
 
