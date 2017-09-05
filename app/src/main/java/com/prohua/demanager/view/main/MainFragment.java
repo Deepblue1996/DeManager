@@ -278,6 +278,8 @@ public class MainFragment extends SupportFragment implements MainFragmentInterfa
                         topBarSelectView.setVisibility(View.GONE);
                         i_list.setImageResource(R.mipmap.order);
                     }
+
+                    itemAdapter.notifyDataSetChanged();
                 });
             });
             sRecyclerView.setAdapter(selectAdapter);
