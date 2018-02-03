@@ -1,2 +1,2 @@
 # DeManager
-Mvp + fragmentation + EventBus + butterknife + hotfix
+Android File Manager use for Mvp + fragmentation + EventBus + butterknife + hotfix
